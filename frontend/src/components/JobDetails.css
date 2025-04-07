@@ -1,0 +1,20 @@
+/* JobDetails.css */
+
+.job-details {
+    padding: 20px;
+    border: 1px solid #ccc;
+    margin-top: 20px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.job-details h2 {
+    color: #333;
+    font-size: 24px;
+}
+
+.job-details p {
+    margin: 10px 0;
+    line-height: 1.6;
+}

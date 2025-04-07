@@ -1,0 +1,71 @@
+/* JobList.css - Styles for job listing layout */
+
+/* Global settings to ensure consistent padding and margin */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif; /* Ensures the font is consistent */
+  background-color: #f4f4f4; /* Light grey background for the whole page */
+}
+
+/* Main container for job postings, centered with max width */
+.job-postings-container {
+  display: flex;
+  flex-direction: column;
+  max-width: 800px; /* Limiting max width for better readability */
+  margin: 20px auto; /* Centers the container with a margin from top and bottom */
+  padding: 20px;
+  background-color: #fff; /* White background for the job postings area */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Subtle shadow for depth */
+}
+
+/* Styling for individual job cards */
+.job-card {
+  border-bottom: 1px solid #ccc; /* Subtle separator between job postings */
+  padding: 20px;
+  transition: background-color 0.3s; /* Smooth transition for hover effect */
+  margin-bottom: 20px; /* Adds space between cards */
+}
+
+.job-card:last-child {
+  border-bottom: none; /* Removes border from the last card */
+}
+
+.job-card:hover {
+  background-color: #f9f9f9; /* Light grey background on hover */
+}
+
+/* Job title styling */
+.job-title {
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 5px; /* Space between the title and the details */
+}
+
+/* Job details styling */
+.job-details {
+  font-size: 16px;
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 10px; /* Space between sections */
+}
+
+/* Salary styling */
+.salary {
+  color: green;
+  font-weight: bold;
+}
+
+@media (max-width: 768px) {
+  .job-postings-container {
+    padding: 10px;
+    margin: 10px;
+  }
+  .job-card {
+    width: 100%; /* Full width on smaller screens */
+  }
+}
