@@ -12,7 +12,7 @@ const app = express();
 
 // Middleware
 app.use(cors({
-    origin: 'http://localhost:3000' // Adjust as necessary to match your frontend URL
+    origin: 'https://capstone-2025-99aj.vercel.app/' // Adjust as necessary to match your frontend URL
 })); // Setup CORS
 app.use(express.json()); // Allows handling JSON requests
 
@@ -118,11 +118,6 @@ app.post('/api/auth/login', async (req, res) => {
   }
 });
 
-
-
-// API Endpoints
-// POST - Create a new job
-// 
 
 // POST - Create a new job
 app.post(

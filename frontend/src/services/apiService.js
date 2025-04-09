@@ -3,7 +3,7 @@ import { API_URL } from '../config/config';  // Adjust the import path based on 
 
 export const fetchJobs = async () => {
   try {
-    const response = await axios.get(API_URL);
+    const response = await axios.get(`${API_URL}/jobs`);
     return response.data;
   } catch (error) {
     console.error('Failed to fetch jobs:', error);
@@ -13,7 +13,7 @@ export const fetchJobs = async () => {
 
 export const createJob = async (jobData) => {
   try {
-    const response = await axios.post(`${API_URL}`, jobData);
+    const response = await axios.post(`${API_URL}/jobs`, jobData);
     return response.data;
   } catch (error) {
     console.error('Failed to create job:', error);

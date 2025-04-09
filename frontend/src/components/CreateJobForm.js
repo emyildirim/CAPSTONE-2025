@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useForm, useFieldArray, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import axios from "axios";
+import { createJob } from "../services/apiService"; // Adjust the import path based on your actual directory structure
 import {
   TextField,
   Button,
@@ -68,7 +68,7 @@ const CreateJobForm = () => {
 
   const handleFormSubmit = async () => {
     try {
-      const response = await axios.post("http://localhost:8080/api/jobs", formValues);
+      const response = await createJob(formValues);
       setMessage(response.data.message || "Job posted successfully!");
       setSubmitSuccess(true);
       reset();
