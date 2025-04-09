@@ -17,9 +17,32 @@ app.use(cors({
 app.use(express.json()); // Allows handling JSON requests
 
 // MongoDB Connection
-mongoose.connect(`${process.env.mongoose_string}`)
-.then(() => console.log('Connected to MongoDB'))
-.catch(err => console.error('MongoDB Connection Error:', err));
+let isConnected = false;
+
+async function connectToDB() {
+  if (isConnected) return;
+
+  try {
+    await mongoose.connect(process.env.mongoose_string, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    isConnected = true;
+    console.log('✅ MongoDB connected');
+  } catch (error) {
+    console.error('❌ MongoDB connection error:', error);
+    throw error;
+  }
+}
+
+app.use(async (req, res, next) => {
+  try {
+    await connectToDB();
+    next(); // continue to route handler
+  } catch (error) {
+    res.status(500).json({ message: "Failed to connect to database", error: error.message });
+  }
+});
 
 // Define Job Schema
 const JobSchema = new mongoose.Schema({
@@ -42,8 +65,6 @@ const UserSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 const User = mongoose.model('User', UserSchema);
-
-
 
 
 const verifyToken = (req, res, next) => {
