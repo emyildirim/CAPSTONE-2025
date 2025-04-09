@@ -6,13 +6,13 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const expressSession = require('express-session');
 const { celebrate, Joi, errors, Segments } = require('celebrate');
-const serverless = require('serverless-http');
 
 const app = express();
+const PORT = process.env.PORT || 4000;
 
 // Middleware
 app.use(cors({
-    origin: '*' // Adjust as necessary to match your frontend URL
+    origin: 'http://localhost:3000' // Adjust as necessary to match your frontend URL
 })); // Setup CORS
 app.use(express.json()); // Allows handling JSON requests
 
@@ -24,9 +24,10 @@ mongoose.connect(`${process.env.mongoose_string}`)
 // Define Job Schema
 const JobSchema = new mongoose.Schema({
     title: { type: String, required: true },
+    companyName: { type: String, required: true },
     location: { type: String, required: true },
-    salary: { type: Number, required: true },
     jobTypes: { type: [String], required: true },
+    payRate: { type: Number, required: true },
     description: { type: String, required: true },
     benefits: { type: [String], required: true },
     requirements: { type: [String], required: true },
@@ -44,13 +45,22 @@ const UserSchema = new mongoose.Schema({
 const User = mongoose.model('User', UserSchema);
 
 
-
-
 const verifyToken = (req, res, next) => {
-  const token = req.headers['authorization'];
-  if (!token) {
+  const authHeader = req.headers.authorization;
+  if (!authHeader) {
     return res.status(403).json({ message: 'Access denied, no token provided' });
   }
+  
+  // Check if the header starts with 'Bearer '
+  const parts = authHeader.split(' ');
+  let token;
+  if (parts.length === 2 && /^Bearer$/i.test(parts[0])) {
+    token = parts[1];
+  } else {
+    // Alternatively, you could choose to reject the request if format is not correct
+    token = authHeader; // or return a 400 error with a message saying 'Invalid token format'
+  }
+  
   jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
     if (err) {
       return res.status(403).json({ message: 'Invalid token' });
@@ -119,31 +129,38 @@ app.post('/api/auth/login', async (req, res) => {
 });
 
 
+
+// API Endpoints
+// POST - Create a new job
+// 
+
 // POST - Create a new job
 app.post(
   '/api/jobs',
   celebrate({
     [Segments.BODY]: Joi.object().keys({
       title: Joi.string().required(),
+      companyName: Joi.string().required(),
       location: Joi.string().required(),
-      salary: Joi.number().integer().required(),
       jobTypes: Joi.array().items(Joi.string()).required(),
+      payRate: Joi.number().integer().required(),
       description: Joi.string().required(),
-      benefits: Joi.array().items(Joi.string()).required(),
-      requirements: Joi.array().items(Joi.string()).required(),
-      responsibilities: Joi.array().items(Joi.string()).required(),
+      benefits: Joi.string().required(),
+      requirements: Joi.string().required(),
+      responsibilities: Joi.string().required(),
     })
   }),
   verifyToken, // Protecting job creation endpoint with JWT
   async (req, res) => {
     try {
-      const { title, location, salary, jobTypes, description, benefits, requirements, responsibilities } = req.body;
+      const { title, companyName, location, jobTypes, payRate, description, benefits, requirements, responsibilities } = req.body;
 
       const newJob = new Job({
         title,
+        companyName,
         location,
-        salary,
         jobTypes,
+        payRate,
         description,
         benefits,
         requirements,
@@ -160,12 +177,6 @@ app.post(
 );
 
 // GET - Fetch all jobs
-app.get('/', (req, res) => {
-  console.log('Server started');
-  return res.json({ message: '/api/jobs to get started' });
-}
-);
-
 app.get("/api/jobs", async (req, res) => {
     try {
         const jobs = await Job.find();
@@ -197,7 +208,6 @@ app.delete('/api/jobs/delete', async (req, res) => {
 });
 
 // Start Server
-const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });
