@@ -169,6 +169,11 @@ app.post(
 );
 
 // GET - Fetch all jobs
+app.get('/', (req, res) => {
+    res.send('/api/jobs to get started');
+}
+);
+
 app.get("/api/jobs", async (req, res) => {
     try {
         const jobs = await Job.find();
