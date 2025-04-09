@@ -3,7 +3,11 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors'); // Ensure CORS is required for cross-origin allowance
 const BodyParser = require('body-parser')
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const expressSession = require('express-session');
 const { celebrate, Joi, errors, Segments } = require('celebrate');
+const serverless = require('serverless-http');
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -35,45 +39,134 @@ const JobSchema = new mongoose.Schema({
 
 const Job = mongoose.model('Job', JobSchema);
 
+// Define User Schema
+const UserSchema = new mongoose.Schema({
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true }
+}, { timestamps: true });
+
+const User = mongoose.model('User', UserSchema);
+
+
+
+
+const verifyToken = (req, res, next) => {
+  const token = req.headers['authorization'];
+  if (!token) {
+    return res.status(403).json({ message: 'Access denied, no token provided' });
+  }
+  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+    if (err) {
+      return res.status(403).json({ message: 'Invalid token' });
+    }
+    req.user = decoded;
+    next();
+  });
+};
+
+// POST - User Sign Up
+app.post('/api/auth/signup', async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    // Check if user already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: 'User already exists' });
+    }
+
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newUser = new User({
+      email,
+      password: hashedPassword,
+    });
+
+    await newUser.save();
+    return res.status(201).json({ message: 'User registered successfully' });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Server error' });
+  }
+});
+
+app.post('/api/auth/login', async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    console.log('Received login request:', req.body); // Log the incoming request
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      console.log(`User not found for email: ${email}`);
+      return res.status(400).json({ message: 'Invalid email or password' });
+    }
+
+    console.log('User found:', user);
+
+    // Compare the password
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      console.log('Password does not match');
+      return res.status(400).json({ message: 'Invalid email or password' });
+    }
+
+    console.log('Password match successful');
+
+    // Create JWT token
+    const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    console.log('JWT token created:', token);
+    return res.json({ message: 'Login successful', token });
+  } catch (error) {
+    console.error('Error during login:', error); // Log the actual error
+    return res.status(500).json({ message: 'Server error', error: error.message });
+  }
+});
+
+
+
 // API Endpoints
 // POST - Create a new job
+// 
+
+// POST - Create a new job
 app.post(
-    '/api/jobs',
-    celebrate({
-      [Segments.BODY]: Joi.object().keys({
-        title: Joi.string().required(),
-        location: Joi.string().required(),
-        salary: Joi.number().integer().required(),
-        jobTypes: Joi.array().items(Joi.string()).required(),
-        description: Joi.string().required(),
-        benefits: Joi.array().items(Joi.string()).required(),
-        requirements: Joi.array().items(Joi.string()).required(),
-        responsibilities: Joi.array().items(Joi.string()).required(),
-      })
-    }),
-    async (req, res) => {
-      try {
-        const { title, location, salary, jobTypes, description, benefits, requirements, responsibilities } = req.body;
-        
-        const newJob = new Job({
-          title,
-          location,
-          salary,
-          jobTypes,
-          description,
-          benefits,
-          requirements,
-          responsibilities
-        });
-        
-        await newJob.save();
-        return res.status(201).json({ message: "Job posted successfully", job: newJob });
-      } catch (error) {
-        console.error(error);
-        return res.status(500).json({ message: "Server error" });
-      }
+  '/api/jobs',
+  celebrate({
+    [Segments.BODY]: Joi.object().keys({
+      title: Joi.string().required(),
+      location: Joi.string().required(),
+      salary: Joi.number().integer().required(),
+      jobTypes: Joi.array().items(Joi.string()).required(),
+      description: Joi.string().required(),
+      benefits: Joi.array().items(Joi.string()).required(),
+      requirements: Joi.array().items(Joi.string()).required(),
+      responsibilities: Joi.array().items(Joi.string()).required(),
+    })
+  }),
+  verifyToken, // Protecting job creation endpoint with JWT
+  async (req, res) => {
+    try {
+      const { title, location, salary, jobTypes, description, benefits, requirements, responsibilities } = req.body;
+
+      const newJob = new Job({
+        title,
+        location,
+        salary,
+        jobTypes,
+        description,
+        benefits,
+        requirements,
+        responsibilities
+      });
+
+      await newJob.save();
+      return res.status(201).json({ message: "Job posted successfully", job: newJob });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: "Server error" });
     }
-  );
+  }
+);
 
 // GET - Fetch all jobs
 app.get("/api/jobs", async (req, res) => {
@@ -107,9 +200,10 @@ app.delete('/api/jobs/delete', async (req, res) => {
 });
 
 // Start Server
-app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-});
+// app.listen(PORT, () => {
+//     console.log(`Server running on http://localhost:${PORT}`);
+// });
+module.exports.handler = serverless(app);
 
 
 // Test The end point
