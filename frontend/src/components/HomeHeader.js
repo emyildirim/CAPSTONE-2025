@@ -1,7 +1,6 @@
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button'
-import { Link } from '@mui/material';
+import Button from '@mui/material/Button';
 
 const HomeHeader = ({ 
     jobs, loading, jobTitleFilter, setJobTitleFilter, 
@@ -13,7 +12,7 @@ const HomeHeader = ({
         const jobTypesAll = jobs.reduce((arr, job) => {
             return [...arr, ...job.jobTypes]
         }, [])
-        return [... new Set(jobTypesAll)]
+        return [...new Set(jobTypesAll)]
     }
     return (
         <Stack spacing={2} sx={{

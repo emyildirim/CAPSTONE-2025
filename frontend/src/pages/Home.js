@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Grid2, Typography } from '@mui/material';
+import { Grid2 } from '@mui/material';
 import JobList from '../components/JobList'
 import JobDetails from '../components/JobDetails';
 import { fetchJobs } from '../services/apiService';
@@ -57,7 +57,7 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    if (filteredJobs.length == 0){
+    if (filteredJobs.length === 0){
       setSelectedJobId("");
     }
   }, [filteredJobs])

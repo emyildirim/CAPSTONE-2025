@@ -3,10 +3,6 @@ import AppBar from '@mui/material/AppBar'
 import { Container } from '@mui/material';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import Stack from '@mui/material/Stack';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button'
-import { red } from '@mui/material/colors';
 
 export default function Layout({children}) {
     return (
