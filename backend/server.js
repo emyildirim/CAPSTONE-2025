@@ -2,7 +2,6 @@ require('dotenv').config({path: "keys.env"});
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors'); // Ensure CORS is required for cross-origin allowance
-const BodyParser = require('body-parser')
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const expressSession = require('express-session');
@@ -10,9 +9,6 @@ const { celebrate, Joi, errors, Segments } = require('celebrate');
 const serverless = require('serverless-http');
 
 const app = express();
-const PORT = process.env.PORT || 4000;
-
-app.use(BodyParser.json())
 
 // Middleware
 app.use(cors({
@@ -170,7 +166,8 @@ app.post(
 
 // GET - Fetch all jobs
 app.get('/', (req, res) => {
-    res.send('/api/jobs to get started');
+  console.log('Server started');
+  return res.json({ message: '/api/jobs to get started' });
 }
 );
 
@@ -205,6 +202,7 @@ app.delete('/api/jobs/delete', async (req, res) => {
 });
 
 // Start Server
+//const PORT = process.env.PORT || 4000;
 // app.listen(PORT, () => {
 //     console.log(`Server running on http://localhost:${PORT}`);
 // });
