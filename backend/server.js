@@ -12,7 +12,7 @@ const app = express();
 
 // Middleware
 app.use(cors({
-    origin: 'https://capstone-2025-99aj.vercel.app/' // Adjust as necessary to match your frontend URL
+    origin: '*' // Adjust as necessary to match your frontend URL
 })); // Setup CORS
 app.use(express.json()); // Allows handling JSON requests
 
