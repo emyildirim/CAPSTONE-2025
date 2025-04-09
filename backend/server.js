@@ -17,32 +17,9 @@ app.use(cors({
 app.use(express.json()); // Allows handling JSON requests
 
 // MongoDB Connection
-let isConnected = false;
-
-async function connectToDB() {
-  if (isConnected) return;
-
-  try {
-    await mongoose.connect(process.env.mongoose_string, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-    isConnected = true;
-    console.log('✅ MongoDB connected');
-  } catch (error) {
-    console.error('❌ MongoDB connection error:', error);
-    throw error;
-  }
-}
-
-app.use(async (req, res, next) => {
-  try {
-    await connectToDB();
-    next(); // continue to route handler
-  } catch (error) {
-    res.status(500).json({ message: "Failed to connect to database", error: error.message });
-  }
-});
+mongoose.connect(`${process.env.mongoose_string}`)
+.then(() => console.log('Connected to MongoDB'))
+.catch(err => console.error('MongoDB Connection Error:', err));
 
 // Define Job Schema
 const JobSchema = new mongoose.Schema({
@@ -65,6 +42,8 @@ const UserSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 const User = mongoose.model('User', UserSchema);
+
+
 
 
 const verifyToken = (req, res, next) => {
@@ -223,11 +202,10 @@ app.delete('/api/jobs/delete', async (req, res) => {
 });
 
 // Start Server
-//const PORT = process.env.PORT || 4000;
-// app.listen(PORT, () => {
-//     console.log(`Server running on http://localhost:${PORT}`);
-// });
-module.exports.handler = serverless(app);
+const PORT = process.env.PORT || 4000;
+app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+});
 
 
 // Test The end point
