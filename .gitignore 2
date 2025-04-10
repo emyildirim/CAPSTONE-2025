@@ -1,4 +1,0 @@
-.vercel
-frontend/build
-backend/keys.env
-**/node_modules
