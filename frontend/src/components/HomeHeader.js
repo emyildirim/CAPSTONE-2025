@@ -12,7 +12,7 @@ const HomeHeader = ({
         const jobTypesAll = jobs.reduce((arr, job) => {
             return [...arr, ...job?.jobTypes]
         }, [])
-        return [... new Set(jobTypesAll)]
+        return [...new Set(jobTypesAll)]
     }
     return (
         <Stack spacing={2} sx={{

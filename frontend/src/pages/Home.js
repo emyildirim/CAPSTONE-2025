@@ -63,7 +63,7 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    if (filteredJobs.length == 0){
+    if (filteredJobs.length === 0){
       setSelectedJobId("");
     }
   }, [filteredJobs])
