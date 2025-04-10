@@ -8,7 +8,7 @@ const JobList = ({jobs, loading, onCardClicked}) => {
         <div>
             {jobs.length > 0 ? (
                 jobs.map(job => (       
-                    <JobCard job={job} key={job._id} onCardClicked={onCardClicked}/>       
+                    <JobCard job={job} key={job?._id} onCardClicked={onCardClicked}/>       
                 ))
             ) : (
                 <p>No jobs found.</p>

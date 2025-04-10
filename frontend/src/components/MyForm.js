@@ -1,12 +1,10 @@
-// frontend/src/components/MyForm.js
-
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import './MyForm.css'; // Import the CSS file
+import './MyForm.css';
 
 const schema = yup.object({
     firstName: yup.string().required("First name is required"),

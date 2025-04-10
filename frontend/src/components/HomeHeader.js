@@ -1,6 +1,6 @@
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
+import Button from '@mui/material/Button'
 
 const HomeHeader = ({ 
     jobs, loading, jobTitleFilter, setJobTitleFilter, 
@@ -10,9 +10,9 @@ const HomeHeader = ({
 
     const jobTypes = (jobs) => {
         const jobTypesAll = jobs.reduce((arr, job) => {
-            return [...arr, ...job.jobTypes]
+            return [...arr, ...job?.jobTypes]
         }, [])
-        return [...new Set(jobTypesAll)]
+        return [... new Set(jobTypesAll)]
     }
     return (
         <Stack spacing={2} sx={{
@@ -45,9 +45,18 @@ const HomeHeader = ({
                     }} 
                 />
             </Stack>
-            <Stack direction="row" sx={{ justifyContent: 'center', alignItems: 'center' }}>
+            <Stack 
+                useFlexGap
+                spacing={2} 
+                direction="row" 
+                sx={{ 
+                    flexWrap: 'wrap', 
+                    justifyContent: 'center', 
+                    alignItems: 'center' 
+                }}
+            >
                Employment:
-               <Stack sx={{marginLeft: 2 }} direction="row" spacing={2}>
+               {/* <Stack sx={{marginLeft: 2 }} direction="row" spacing={2}> */}
                 {jobTypes(jobs).map((jobType) => {
                     return (
                         <Button
@@ -80,7 +89,7 @@ const HomeHeader = ({
                         Clear Selection
                     </Button>
                 )}
-               </Stack>
+               {/* </Stack> */}
             </Stack> 
             <Stack direction="row" sx={{ justifyContent: 'center', alignItems: 'center' }}>
                 {loading && (

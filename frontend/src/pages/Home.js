@@ -5,8 +5,14 @@ import JobDetails from '../components/JobDetails';
 import { fetchJobs } from '../services/apiService';
 import Layout from '../components/Layout';
 import HomeHeader from '../components/HomeHeader';
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import Button from '@mui/material/Button';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 
 const Home = () => {
+  const theme = useTheme();
+  const medium = useMediaQuery(theme.breakpoints.up('md'));
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedJobId, setSelectedJobId] = useState();
@@ -37,7 +43,7 @@ const Home = () => {
   })
 
   const job = filteredJobs.find((job) => {
-    return job._id === selectedJobId;
+    return job?._id === selectedJobId;
   })
 
   useEffect(() => {
@@ -57,7 +63,7 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    if (filteredJobs.length === 0){
+    if (filteredJobs.length == 0){
       setSelectedJobId("");
     }
   }, [filteredJobs])
@@ -66,26 +72,45 @@ const Home = () => {
     setSelectedJobId(id);
   }
 
+  let gridLeftSx=12;
+  let gridRightSx=0;
+  if(selectedJobId){
+    gridLeftSx=0;
+    gridRightSx=12;
+  }
+  const mobileDetailSelected = (!medium && selectedJobId);
+
   return (
     <Layout>
-      <HomeHeader 
-        jobs={jobs} 
-        loading={loading}
-        jobTitleFilter={jobTitleFilter}
-        setJobTitleFilter={setJobTitleFilter}
-        locationFilter={locationFilter}
-        setLocationFilter={setLocationFilter}
-        employmentTypeFilter={employmentTypeFilter}
-        setEmploymentTypeFilter={setEmploymentTypeFilter}
-      />
+      {!mobileDetailSelected && (
+        <HomeHeader 
+          jobs={jobs} 
+          loading={loading}
+          jobTitleFilter={jobTitleFilter}
+          setJobTitleFilter={setJobTitleFilter}
+          locationFilter={locationFilter}
+          setLocationFilter={setLocationFilter}
+          employmentTypeFilter={employmentTypeFilter}
+          setEmploymentTypeFilter={setEmploymentTypeFilter}
+        />
+      )}
+      {mobileDetailSelected && (
+        <Button
+          sx={{ my: 2, ml: 1}} 
+          startIcon={<ArrowBackIcon/>}  
+          onClick={() => {
+            setSelectedJobId("");
+          }}>
+            Back
+        </Button>
+      )}
       <Grid2 container spacing={2}>
-        <Grid2 size={6}>
-          <JobList loading={loading} jobs={filteredJobs} onCardClicked={onCardClicked}/>
-        </Grid2>
-        <Grid2 size={6}>
-          {/* {!selectedJobId && (
-            null
-          )} */}
+        {!mobileDetailSelected && (
+          <Grid2 size={{ xs: gridLeftSx, md: 6 }}>
+            <JobList loading={loading} jobs={filteredJobs} onCardClicked={onCardClicked}/>
+          </Grid2>
+        )}
+        <Grid2 size={{ xs: gridRightSx, md: 6 }}>
           {selectedJobId && (
             <JobDetails job={job}/>
           )}

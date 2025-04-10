@@ -13,14 +13,17 @@ const JobCard = ({ job, onCardClicked }) => {
   }
   return (
     <Card onClick={() => {
-      onCardClicked(job._id)
+      onCardClicked(job?._id)
     }} sx={{ marginBottom: 2 }}>
       <CardContent>
         <Typography sx={{ fontWeight: 'bold' }} variant="h5" component="div">
-          {job.title}
+          {job?.title}
+        </Typography>
+        <Typography color="text.secondary">
+          {job?.companyName}
         </Typography>
         <Typography sx={{ mb: 1.5 }} color="text.secondary">
-          {job.location}
+          {job?.location}
         </Typography>
         <JobType job={job}/>
         <Divider orientation="horizontal" flexItem />
@@ -33,7 +36,7 @@ const JobCard = ({ job, onCardClicked }) => {
             )
           })}
           <Typography sx={{ mt: 2 }} color="primary">
-            Posted {daysAgo(job.createdAt)} days ago
+            Posted {daysAgo(job?.createdAt)} days ago
           </Typography>
       </CardContent>
     </Card>

@@ -5,21 +5,35 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import { Chip, Stack, Box, Divider } from '@mui/material';
+import { makeStyles } from "@material-ui/styles";
+
+const useStyles = makeStyles({
+    root: {
+      position: "sticky",
+      top: "1rem",
+      minWidth: "275"
+    }
+  });
 
 const JobDetails = ({ job }) => {
+    const pay = !!job?.payRate ? job?.payRate : job?.salary;
+    const classes = useStyles();
     if (!job) return null; // Return nothing if no job is selected
 
     return (
-        <Card>
+        <Card className={classes.root}>
             <CardContent>
                 <Typography sx={{ fontWeight: 'bold' }} variant="h5" component="div">
-                    {job.title}
+                    {job?.title}
+                </Typography>
+                <Typography color="text.secondary">
+                    {job?.companyName}
                 </Typography>
                 <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                    {job.location}
+                    {job?.location}
                 </Typography>
                 <Stack sx={{marginTop: 3, marginBottom: 2 }} direction="row" spacing={2}>
-                    <Chip label={`$ ${job?.salary} /year`} color="secondary" sx={{ boarderRadius: 1 }} />
+                    <Chip label={`$ ${pay} /year`} color="secondary" sx={{ boarderRadius: 1 }} />
                     {job?.jobTypes?.map((jobType) => {
                         return (
                             <Chip 
@@ -34,10 +48,10 @@ const JobDetails = ({ job }) => {
                 <Box sx={{ marginTop:2, marginBottom:1 }}>
                     <Divider orientation="horizontal" flexItem />
                 </Box>
-                <JobAttribute title="Description:" subTitle={job.description}/>
-                <JobAttribute title="Benefits:" attributes={job.benefits}/>
-                <JobAttribute title="Requirements:" attributes={job.requirements}/>
-                <JobAttribute title="Responsibilities:" attributes={job.responsibilities}/>
+                <JobAttribute title="Description:" subTitle={job?.description}/>
+                <JobAttribute title="Benefits:" attributes={job?.benefits}/>
+                <JobAttribute title="Requirements:" attributes={job?.requirements}/>
+                <JobAttribute title="Responsibilities:" attributes={job?.responsibilities}/>
             </CardContent>
         </Card>
     );

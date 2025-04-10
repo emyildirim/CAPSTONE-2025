@@ -1,5 +1,3 @@
-// frontend/src/components/MyComponent.js
-
 import React from 'react';
 import Button from '@mui/material/Button'; // Make sure Material UI is installed
 
