@@ -1,9 +1,9 @@
-
-# Group_20
-
-## Job Application Website
+# Job Application Website
 
 Welcome to the Job Application Website project! This application serves as a fully functional job board. We are calling it TheJobGetter. With added features for enhanced usability and a seamless user experience. Below, you’ll find all the information needed to understand, set up, and contribute to this project.
+
+<img width="1457" alt="image" src="https://github.com/user-attachments/assets/bc070cef-6f23-4d85-96a7-e0ff2f1452bc" />
+
 
 ### Contributors and Developers
 | Name | GitHub Username |
